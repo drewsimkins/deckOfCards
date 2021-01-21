@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using deckOfCards.Data;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -27,6 +28,8 @@ namespace deckOfCards
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            //For brevity's sake I'm using an EF Core InMemoryDatabase which is usually used for testing
+            //This could easily be replaced with any other database by adding another repo and altering the services required
             services.AddDbContext<CardContext>(opt => opt.UseInMemoryDatabase(databaseName: "test"));
             services.AddMvc();
 
@@ -36,6 +39,7 @@ namespace deckOfCards
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "deckOfCards", Version = "v1" });
             });
 
+            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             services.AddScoped<IDeckRepo, InMemoryDeckRepo>();
         }
 
