@@ -6,13 +6,16 @@ namespace deckOfCards.Data
 {
     public interface IDeckRepo
     {
+        //Get
+        IEnumerable<Card> GetCurrentDeck();
         //Create
         IEnumerable<Card> CreateDeck();
         //Deal
         IEnumerable<Card> DealHand(int size);
         //Reset
-        IEnumerable<Card> ResetDeck();
+        void ResetDeck();
         //Shuffle
         void ShuffleDeck();
+        bool Save();
     }
 }
