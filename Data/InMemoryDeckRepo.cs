@@ -35,7 +35,16 @@ namespace deckOfCards.Data
 
         IEnumerable<Card> IDeckRepo.DealHand(int size)
         {
-            throw new NotImplementedException();
+            var deck = _context.Deck.ToList();
+            var hand = deck.Take(size);
+
+            foreach (Card c in hand)
+            {
+                _context.Deck.Remove(c);
+                _context.SaveChanges();
+            }
+
+            return hand;
         }
 
         void IDeckRepo.ResetDeck()
