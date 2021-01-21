@@ -26,9 +26,10 @@ namespace deckOfCards.Data
                 {
                     Card card = new(i, j);
                     _context.Deck.Add(card);
-                    _context.SaveChanges();
+
                 }
             }
+            _context.SaveChanges();
 
             return _context.Deck.ToList();
         }
@@ -41,16 +42,22 @@ namespace deckOfCards.Data
             foreach (Card c in hand)
             {
                 _context.Deck.Remove(c);
-                _context.SaveChanges();
             }
+            _context.SaveChanges();
 
             return hand;
         }
 
         void IDeckRepo.ResetDeck()
         {
-            //Not required as we can just run create deck again. 
-            //Method kept as future repositories might function differently
+            var deck = _context.Deck.ToList();
+
+            foreach (Card c in deck)
+            {
+                _context.Remove(c);
+            }
+            _context.SaveChanges();
+
             CreateDeck();
         }
 
