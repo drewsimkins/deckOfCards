@@ -1,3 +1,6 @@
+using System;
+using System.ComponentModel.DataAnnotations;
+
 namespace deckOfCards.Models
 {
     public class Card
@@ -10,8 +13,10 @@ namespace deckOfCards.Models
             Clubs
         }
 
+        [Range(1, 13, ErrorMessage = "Card value must be between 1 & 13")]
         public int Value { get; set; }
 
+        [Range(0, 3, ErrorMessage = "Card suit must be between 0 & 3")]
         public Suites Suit { get; set; }
 
         public string GetValue(Card card)
@@ -27,6 +32,12 @@ namespace deckOfCards.Models
 
             value += (" of {0}", card.Suit);
             return value;
+        }
+
+        public Card(int value, int suit)
+        {
+            Value = value;
+            Suit = (Suites)suit;
         }
     }
 }
