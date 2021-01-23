@@ -1,24 +1,30 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using AutoMapper;
+using deckOfCards.Dtos;
 using deckOfCards.Models;
+using deckOfCards.Tools;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace deckOfCards.Data
 {
     public class InMemoryDeckRepo : IDeckRepo
     {
         private readonly CardContext _context;
+        private readonly IMapper _mapper;
 
-        public InMemoryDeckRepo(CardContext context)
+        public InMemoryDeckRepo(CardContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
-        IEnumerable<Card> IDeckRepo.GetCurrentDeck()
+        IList<Card> IDeckRepo.GetCurrentDeck()
         {
             return _context.Deck.ToList();
         }
 
-        public IEnumerable<Card> CreateDeck()
+        public IList<Card> CreateDeck()
         {
             for (int i = 0; i <= 3; i++)
             {
@@ -28,22 +34,21 @@ namespace deckOfCards.Data
                     _context.Deck.Add(card);
 
                 }
+                _context.SaveChanges();
             }
-            _context.SaveChanges();
 
             return _context.Deck.ToList();
         }
 
-        IEnumerable<Card> IDeckRepo.DealHand(int size)
+        IList<Card> IDeckRepo.DealHand(int size)
         {
             var deck = _context.Deck.ToList();
-            var hand = deck.Take(size);
+            var hand = deck.Take(size).ToList();
 
             foreach (Card c in hand)
             {
                 _context.Deck.Remove(c);
             }
-            _context.SaveChanges();
 
             return hand;
         }
@@ -52,18 +57,38 @@ namespace deckOfCards.Data
         {
             var deck = _context.Deck.ToList();
 
-            foreach (Card c in deck)
+            if (deck.Any())
             {
-                _context.Remove(c);
+                foreach (Card c in deck)
+                {
+                    _context.Remove(c);
+                }
+                _context.SaveChanges();
             }
-            _context.SaveChanges();
 
             CreateDeck();
         }
 
         void IDeckRepo.ShuffleDeck()
         {
-            throw new NotImplementedException();
+            var deck = _context.Deck.ToList();
+
+            if (deck.Any())
+            {
+                deck.Shuffle();
+
+                foreach (Card c in deck)
+                {
+                    _context.Deck.Remove(c);
+                }
+                _context.SaveChanges();
+
+                foreach (Card c in deck)
+                {
+                    _context.Deck.Add(c);
+                }
+                _context.SaveChanges();
+            }
         }
 
         bool IDeckRepo.Save()

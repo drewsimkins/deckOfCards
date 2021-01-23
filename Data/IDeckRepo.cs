@@ -7,11 +7,11 @@ namespace deckOfCards.Data
     public interface IDeckRepo
     {
         //Get
-        IEnumerable<Card> GetCurrentDeck();
+        IList<Card> GetCurrentDeck();
         //Create
-        IEnumerable<Card> CreateDeck();
+        IList<Card> CreateDeck();
         //Deal
-        IEnumerable<Card> DealHand(int size);
+        IList<Card> DealHand(int size);
         //Reset
         void ResetDeck();
         //Shuffle
