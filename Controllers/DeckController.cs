@@ -1,13 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Threading.Tasks;
 using AutoMapper;
 using deckOfCards.Data;
 using deckOfCards.Dtos;
-using deckOfCards.Models;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace deckOfCards.Controllers
