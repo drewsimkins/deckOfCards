@@ -1,11 +1,8 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using AutoMapper;
-using deckOfCards.Dtos;
 using deckOfCards.Models;
 using deckOfCards.Tools;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace deckOfCards.Data
 {
@@ -21,7 +18,7 @@ namespace deckOfCards.Data
         }
         IList<Card> IDeckRepo.GetCurrentDeck()
         {
-            return _context.Deck.ToList();
+            return _context.Deck.OrderBy(c => c.Order).ToList();
         }
 
         public IList<Card> CreateDeck()
@@ -30,14 +27,14 @@ namespace deckOfCards.Data
             {
                 for (int j = 1; j <= 13; j++)
                 {
-                    Card card = new(i, j);
+                    var order = i * 13 + j;
+                    Card card = new(i, j, order);
                     _context.Deck.Add(card);
-
                 }
                 _context.SaveChanges();
             }
 
-            return _context.Deck.ToList();
+            return _context.Deck.OrderBy(c => c.Order).ToList();
         }
 
         IList<Card> IDeckRepo.DealHand(int size)

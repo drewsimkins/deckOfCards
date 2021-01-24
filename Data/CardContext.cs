@@ -1,7 +1,5 @@
-using System;
 using deckOfCards.Models;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace deckOfCards.Data
 {

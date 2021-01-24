@@ -1,9 +1,9 @@
-using System.Collections.Generic;
-using System.Linq;
 using AutoMapper;
 using deckOfCards.Data;
 using deckOfCards.Dtos;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace deckOfCards.Controllers
 {

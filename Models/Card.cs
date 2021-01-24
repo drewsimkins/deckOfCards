@@ -7,6 +7,8 @@ namespace deckOfCards.Models
     {
         public int Id { get; set; }
 
+        public int Order { get; set; }
+
         [Range(1, 13, ErrorMessage = "Card value must be between 1 & 13")]
         public int Value { get; set; }
 
@@ -15,11 +17,12 @@ namespace deckOfCards.Models
 
         public string Name { get; private set; }
 
-        public Card(int suit, int value)
+        public Card(int suit, int value, int order)
         {
             Value = value;
             Suit = suit;
             Name = GenerateName();
+            Order = order;
         }
 
         private string GenerateName()

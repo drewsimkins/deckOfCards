@@ -1,6 +1,5 @@
-using System;
-using System.Collections.Generic;
 using deckOfCards.Models;
+using System.Collections.Generic;
 
 namespace deckOfCards.Data
 {
