@@ -13,7 +13,7 @@ namespace deckOfCards.Models
         [Range(0, 3, ErrorMessage = "Card suit must be between 0 & 3")]
         public int Suit { get; set; }
 
-        public string Name { get; set; }
+        public string Name { get; private set; }
 
         public Card(int suit, int value)
         {

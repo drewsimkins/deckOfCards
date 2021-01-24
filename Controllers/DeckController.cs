@@ -41,7 +41,7 @@ namespace deckOfCards.Controllers
         /// Will create a new deck of cards
         /// </summary>
         /// <returns>Action result along with a deck of cards</returns>
-        [HttpPut]
+        [HttpPost]
         public ActionResult<IList<CardReadDto>> CreateDeckOfCards()
         {
             var createdDeck = _repo.CreateDeck();
