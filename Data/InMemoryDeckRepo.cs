@@ -1,6 +1,5 @@
 using AutoMapper;
 using deckOfCards.Models;
-using deckOfCards.Tools;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -39,7 +38,7 @@ namespace deckOfCards.Data
 
         IList<Card> IDeckRepo.DealHand(int size)
         {
-            var deck = _context.Deck.ToList();
+            var deck = _context.Deck.OrderBy(c => c.Order).ToList();
             var hand = deck.Take(size).ToList();
 
             foreach (Card c in hand)
@@ -56,14 +55,9 @@ namespace deckOfCards.Data
 
             if (deck.Any())
             {
-                foreach (Card c in deck)
-                {
-                    _context.Remove(c);
-                }
+                deck.ForEach(c => c.Order = c.Id);
                 _context.SaveChanges();
             }
-
-            CreateDeck();
         }
 
         void IDeckRepo.ShuffleDeck()
@@ -72,18 +66,17 @@ namespace deckOfCards.Data
 
             if (deck.Any())
             {
-                deck.Shuffle();
+                System.Random rand = new();
+                var randomDeck = deck.Select(x => new { value = x, order = rand.Next() })
+                    .OrderBy(x => x.order).Select(x => x.value).ToList();
 
-                foreach (Card c in deck)
+                for(int i = 0; i < randomDeck.Count; i++)
                 {
-                    _context.Deck.Remove(c);
+                    var card = randomDeck[i];
+                    card.Order = i;
                 }
-                _context.SaveChanges();
 
-                foreach (Card c in deck)
-                {
-                    _context.Deck.Add(c);
-                }
+                deck = randomDeck;
                 _context.SaveChanges();
             }
         }
