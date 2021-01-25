@@ -1,10 +1,8 @@
 ﻿using deckOfCards.Data;
 using deckOfCards.Exceptions;
 using deckOfCards.Models;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace deckOfCards.Services
 {
@@ -62,7 +60,7 @@ namespace deckOfCards.Services
             if(deck == null || size > deck.Count)
             {
                 _logger.LogError("Invalid hand size");
-                throw new InvalidDeckException("Invalid hand size");
+                throw new InvalidHandException("Invalid hand size");
             }
 
             var hand = _deckRepo.DealHand(size);
