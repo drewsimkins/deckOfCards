@@ -1,6 +1,7 @@
 using AutoMapper;
 using deckOfCards.Data;
 using deckOfCards.Dtos;
+using deckOfCards.Services;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,14 +13,15 @@ namespace deckOfCards.Controllers
     [ApiController]
     public class DeckController : ControllerBase
     {
-        private const int expectedDeckSize = 52;
-        private readonly IDeckRepo _repo;
         private readonly IMapper _mapper;
+        private readonly IDeckService _service;
+        private readonly ILoggerManager _logger;
 
-        public DeckController(IDeckRepo repo, IMapper mapper)
+        public DeckController(IMapper mapper, IDeckService service, ILoggerManager logger)
         {
-            _repo = repo;
             _mapper = mapper;
+            _service = service;
+            _logger = logger;
         }
 
         /// <summary>
@@ -29,8 +31,8 @@ namespace deckOfCards.Controllers
         [HttpGet(Name = "GetCurrentDeck")]
         public ActionResult<IList<CardReadDto>> GetCurrentDeck()
         {
-            var currentDeck = _repo.GetCurrentDeck();
-            if (currentDeck == null || !currentDeck.Any())
+            var currentDeck = _service.GetDeck();
+            if (currentDeck == null)
             {
                 return NotFound();
             }
@@ -44,7 +46,7 @@ namespace deckOfCards.Controllers
         [HttpPost]
         public ActionResult<IList<CardReadDto>> CreateDeckOfCards()
         {
-            var createdDeck = _repo.CreateDeck();
+            var createdDeck = _service.CreateDeck();
             return CreatedAtRoute(nameof(GetCurrentDeck), _mapper.Map<IList<CardReadDto>>(createdDeck));
         }
 
@@ -55,7 +57,7 @@ namespace deckOfCards.Controllers
         [HttpGet("reset")]
         public ActionResult ResetDeckOfCards()
         {
-            _repo.ResetDeck();
+            _service.ResetDeck();
             return NoContent();
         }
 
@@ -68,20 +70,7 @@ namespace deckOfCards.Controllers
         [HttpGet("{size}")]
         public ActionResult<IList<CardReadDto>> GetHand(int size)
         {
-            var currentDeck = _repo.GetCurrentDeck();
-
-            if (currentDeck == null)
-            {
-                return NotFound();
-            }
-
-            if (size > currentDeck.Count)
-            {
-                return BadRequest("Hand size larger than deck size");
-            }
-
-            var hand = _repo.DealHand(size);
-            _repo.Save();
+            var hand = _service.DealHand(size);
             return Ok(_mapper.Map<IList<CardReadDto>>(hand));
         }
 
@@ -92,15 +81,7 @@ namespace deckOfCards.Controllers
         [HttpGet("shuffle")]
         public ActionResult ShuffleDeck()
         {
-            //Validate current deck is of the correct size
-            var currentDeck = _repo.GetCurrentDeck();
-            if (currentDeck.Count != expectedDeckSize)
-            {
-                return BadRequest("Invalid deck size");
-            }
-
-            _repo.ShuffleDeck();
-            _repo.Save();
+            _service.ShuffleDeck();
             return NoContent();
         }
     }
